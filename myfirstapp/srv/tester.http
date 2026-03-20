@@ -1,0 +1,172 @@
+###Like a simple test client (Browser)
+
+### Three Hast to start a new call
+### This is the test of Hello world service
+http://localhost:4004/odata/v4/MyService/MyInitCall(name='Raja')
+
+### Consume the service document - describe what are the entities part of my service
+http://localhost:4004/odata/v4/CatelogService
+
+### Metadata document of the odata service
+http://localhost:4004/odata/v4/CatelogService/$metadata
+
+### Read all my employee data - SELECT * FROM emp
+http://localhost:4004/odata/v4/CatelogService/EmployeeSet
+Authorization: Basic raja:Welcome1
+
+### Read only relevant fields my employee data - SELECT ID FROM emp
+http://localhost:4004/odata/v4/CatelogService/EmployeeSet?$select=ID,nameFirst,nameLast,sex,email
+
+### Get the total count of employee count
+http://localhost:4004/odata/v4/CatelogService/EmployeeSet/$count
+
+### Pagination - Load data chunk by chunk for performance $top and $skip
+### SELECT * UPTO ROWS
+http://localhost:4004/odata/v4/CatelogService/EmployeeSet?$top=2&$skip=2
+
+### Load a single employee by Key - SELECT SINGEL * FROM emp WHERE ID = ''.
+
+http://localhost:4004/odata/v4/CatelogService/EmployeeSet/02BD2137-0890-1EEA-A6C2-BB55C197E7FB
+
+### How to filter based on condition $filter
+### SELECT * FROM emp WHERE bankName = '';
+### Conditions eq, nq, le, ge, lt, gt
+http://localhost:4004/odata/v4/CatelogService/EmployeeSet?$filter=bankName eq 'My Bank of San Francisco'&$top=2
+
+### Filter based on pattern
+http://localhost:4004/odata/v4/CatelogService/EmployeeSet?$filter=contains(nameFirst, 'Su' )
+
+### Using SORT
+http://localhost:4004/odata/v4/CatelogService/EmployeeSet?$orderby=salaryAmount desc
+
+### Get all purchase order
+http://localhost:4004/odata/v4/CatelogService/PurchaseOrderSet
+
+### Get single purchase order data
+
+http://localhost:4004/odata/v4/CatelogService/PurchaseOrderSet/74867AD200E41EDBA5D8B0C98DC3RAJ1
+
+### Get items data for the purchase order items (Loose coupling) Lazy Loading
+
+http://localhost:4004/odata/v4/CatelogService/PurchaseOrderSet/74867AD200E41EDBA5D8B0C98DC3RAJ1/items
+
+
+### Load data of single PO Header + its all items together
+
+http://localhost:4004/odata/v4/CatelogService/PurchaseOrderSet/74867AD200E41EDBA5D8B0C98DC28052?$expand=items
+
+
+### using cds view to load Lazyloading
+
+http://localhost:4004/odata/v4/CDSService/ProductSet/74867AD200E41EDBA5D8B06B26EB4052?$expand=To_Items
+
+### Filter data at Items level
+
+http://localhost:4004/odata/v4/CDSService/ProductSet/74867AD200E41EDBA5D8B06B26EB4052?$expand=To_Items($filter=TaxAmount le 500)
+
+### Create data for employee
+
+POST http://localhost:4004/odata/v4/CatelogService/EmployeeSet
+Content-Type: application/json
+
+{
+  "nameFirst": "Arnold",
+  "nameLast": "Peter",
+  "nameMiddle": null,
+  "nameInitials": null,
+  "sex": "M",
+  "language": "E",
+  "phoneNumber": null,
+  "email": "Arnold.peter@sap.com",
+  "loginName": "WINTRW",
+  "Currency_code": "USD",
+  "salaryAmount": 60000,
+  "accountNumber": "7766554433",
+  "bankId": "121008",
+  "bankName": "My Bank of America"
+}
+
+### Update data
+
+PATCH http://localhost:4004/odata/v4/CatelogService/EmployeeSet/82de4528-5891-4690-b08b-64874e08a163
+Content-Type: application/json
+
+{
+  "salaryAmount": 65000
+}
+
+
+### Delete data
+
+DELETE  http://localhost:4004/odata/v4/CatelogService/EmployeeSet/82de4528-5891-4690-b08b-64874e08a163
+Content-Type: application/json
+
+### Select particular PO and PO Items together
+
+http://localhost:4004/odata/v4/CatelogService/PurchaseOrderSet/74867AD200E41EDBA5D8B0C98DC3A052?$expand=items
+
+### Select particular PO Items 
+http://localhost:4004/odata/v4/CatelogService/PurchaseOrderSet/74867AD200E41EDBA5D8B0C98DC3A052/items
+
+
+### Deep Insert 
+POST http://localhost:4004/odata/v4/CatelogService/PurchaseOrderSet
+Content-Type: application/json
+
+{
+  "CURRENCY_code": "EUR",
+  "GROSS_AMOUNT": 1427.76,
+  "NET_AMOUNT": 1199.8,
+  "TAX_AMOUNT": 227.96,
+  "NODE_KEY": "74867AD200E41EDBA5D8B0C98DC3RAJ1",
+  "PO_ID": "300004010",
+  "PARTNER_GUID_NODE_KEY": "74867AD200E41EDBA5D8B06885AC6052",
+  "LIFECYCLE_STATUS": "N",
+  "OVERALL_STATUS": "P",
+  "NOTE": null,
+  "items": [
+    {
+      "CURRENCY_code": "USD",
+      "GROSS_AMOUNT": 1218.56,
+      "NET_AMOUNT": 1024,
+      "TAX_AMOUNT": 194.56,
+      "NODE_KEY": "74867AD200E41EDBA5D8B0CBD361RA01",
+      "PO_ITEM_POS": 10,
+      "PRODUCT_GUID_NODE_KEY": "74867AD200E41EDBA5D8B06B26EC8052"
+    },
+    {
+      "CURRENCY_code": "USD",
+      "GROSS_AMOUNT": 21.18,
+      "NET_AMOUNT": 17.8,
+      "TAX_AMOUNT": 3.38,
+      "NODE_KEY": "74867AD200E41EDBA5D8B0CBD361RA02",
+      "PO_ITEM_POS": 20,
+      "PRODUCT_GUID_NODE_KEY": "74867AD200E41EDBA5D8B06B26F22052"
+    },
+    {
+      "CURRENCY_code": "USD",
+      "GROSS_AMOUNT": 188.02,
+      "NET_AMOUNT": 158,
+      "TAX_AMOUNT": 30.02,
+      "NODE_KEY": "74867AD200E41EDBA5D8B0CBD362RA03",
+      "PO_ITEM_POS": 30,
+      "PRODUCT_GUID_NODE_KEY": "74867AD200E41EDBA5D8B06B26F7C052"
+    }
+  ]
+}
+
+### Test the function to load top 3 using FM.
+
+http://localhost:4004/odata/v4/CatelogService/getLargestOrder()
+
+
+### Get the value of purchaseorderset
+
+http://localhost:4004/odata/v4/CatelogService/PurchaseOrderSet/74867AD200E41EDBA5D8B0C98DC3A052
+
+### Test Boost functionality
+
+POST http://localhost:4004/odata/v4/CatelogService/PurchaseOrderSet/74867AD200E41EDBA5D8B0C98DC3A052/boost
+Content-Type: application/json
+
+{}

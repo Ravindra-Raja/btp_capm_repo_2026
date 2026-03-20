@@ -1,0 +1,28 @@
+{
+  "welcomeFile": "/managepo/webapp/index.html",
+  "authenticationMethod": "route",
+  "sessionTimeout": 10,
+  "routes": [
+    {
+      "source": "^/managepo/webapp/(.*)",
+      "localDir": "managepo/webapp/",
+      "authenticationType": "xsuaa"
+    },
+    {
+      "source": "^/user-api/currentUser$",
+      "target": "/currentUser",
+      "authenticationType": "xsuaa",
+      "service": "sap-approuter-userapi"
+    },
+    {
+      "source": "^/srv/(.*)$",
+      "target": "/$1",
+      "destination": "srv-api",
+      "authenticationType": "xsuaa"
+    }
+  ],
+  "logout": {
+    "logoutEndpoint": "/logout",
+    "logoutPage": "https://www.anubhavtrainings.com"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "myfirstapp-ui",
+  "version": "1.0.0",
+  "description": "My first app with Approuter to BTP",
+  "main": "index.js",
+  "scripts": {
+    "start": "node node_modules/@sap/approuter/approuter.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "fiori",
+    "btp",
+    "capm"
+  ],
+  "author": "Raja",
+  "license": "ISC",
+  "dependencies": {
+    "@sap/approuter": "^21.1.0"
+  }
+}
