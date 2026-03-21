@@ -13,7 +13,7 @@ build-parameters:
 modules:
 ### Manually adding our UI Module Fiori UI + Approuter
   - name: myfirstapp-ui
-    type: approuter.nodejs
+    type: nodejs
     path: app
     parameters:
       instances: 1
@@ -32,7 +32,7 @@ modules:
 ### End of adding
 
   - name: myfirstapp-srv
-    type: approuter.nodejs
+    type: nodejs
     path: gen/srv
     parameters:
       instances: 1
@@ -63,7 +63,7 @@ resources:
       service-plan: application
       path: ./xs-security.json
       config:
-        xsappname: myfirstapp-${org}-${space}
+        xsappname: 'myfirstapp-${org}-${space}'
         tenant-mode: dedicated
         oauth2-configuration:
           credential-types:

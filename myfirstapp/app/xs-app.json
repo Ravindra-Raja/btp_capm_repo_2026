@@ -13,13 +13,12 @@
     {
         "source": "^/user-api/currentUser$",
         "target": "/currentUser",
-        "authenticationType": "xsuaa",
         "service": "sap-approuter-userapi"
     }, 
     {
         "source": "^/(.*)$",
-        "destination": "srv-api",
-        "authenticationType": "xsuaa"
+        "authenticationType": "xsuaa",
+        "destination": "srv-api"        
     }    
   ],
   "logout": {
