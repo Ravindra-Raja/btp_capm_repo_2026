@@ -1,35 +1,65 @@
 {
-  "xsappname": "myfirstapp-${org}-${space}",
-  "scopes": [
-    { "name": "$XSAPPNAME.Display", "description": "display" },
-    { "name": "$XSAPPNAME.Edit", "description": "edit" },
-    { "name": "$XSAPPNAME.Delete", "description": "delete" },
-    { "name": "$XSAPPNAME.Viewer", "description": "Viewer" },
-    { "name": "$XSAPPNAME.Editor", "description": "Editor" }
-  ],
-  "attributes": [
-    { "name": "bankName", "description": "Bank name which will control row level security", "valueType": "string" }
-  ],
-  "role-templates": [
-    {
-      "name": "Viewer",
-      "description": "View all data of PO and Employees",
-      "default-role-name": "Viewer: Authorized to Read All PO and Employees",
-      "scope-references": ["$XSAPPNAME.Display"],
-      "attribute-references": [{"name": "bankName"}]
-    },
-    {
-      "name": "Editor",
-      "description": "Edit, delete PO and Employees",
-      "scope-references": ["$XSAPPNAME.Edit", "$XSAPPNAME.Delete"]
-    }
-  ],
-  "authorities": ["$ACCEPT_GRANTED_AUTHORITIES"],
-  "oauth2-configuration": {
-    "token-validity": 9000,
-    "redirect-uris": [
-      "https://myfirstapp-ui.cfapps.us10-001.hana.ondemand.com/login/callback"
-    ]
+ "xsappname": "myfirstapp",
+ "scopes": [
+  {
+   "name": "$XSAPPNAME.Display",
+   "description": "display"
   },
-  "xsenableasyncservice": "true"
+  {
+   "name": "$XSAPPNAME.Edit",
+   "description": "edit"
+  },
+  {
+   "name": "$XSAPPNAME.Delete",
+   "description": "delete"
+  },
+  {
+   "name": "$XSAPPNAME.Viewer",
+   "description": "Viewer"
+  },
+  {
+   "name": "$XSAPPNAME.Editor",
+   "description": "Editor"
+  }
+ ],
+ "attributes": [
+  {
+   "name": "bankName",
+   "description": "Bank name which will control row level security",
+   "valueType": "string"
+  }
+ ],
+ "role-templates": [
+  {
+   "name": "Viewer",
+   "description": "View all data of PO and Employees",
+   "default-role-name": "Viewer: Authorized to Read All PO and Employees",
+   "scope-references": [
+    "$XSAPPNAME.Display"
+   ],
+   "attribute-references": [
+    {
+     "name": "bankName"
+    }
+   ]
+  },
+  {
+   "name": "Editor",
+   "description": "Edit, delete PO and Employees",
+   "scope-references": [
+    "$XSAPPNAME.Edit",
+    "$XSAPPNAME.Delete"
+   ]
+  }
+ ],
+ "authorities": [
+  "$ACCEPT_GRANTED_AUTHORITIES"
+ ],
+ "oauth2-configuration": {
+  "token-validity": 9000,
+  "redirect-uris": [
+   "https://myfirstapp.cfapps.us10-001.hana.ondemand.com/login/callback"
+  ]
+ },
+ "xsenableasyncservice": "true"
 }

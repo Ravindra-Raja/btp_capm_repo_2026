@@ -18,10 +18,10 @@ entity AddressSet as projection on master.address;
 entity StatusCodeSet as projection on master.statusCode;
 @Capabilities : { Deletable : false }
 entity PurchaseOrderSet @(
-                            restrict: [
-                                {grant : ['READ'], to: 'Viewer'},
-                                {grant : ['WRITE', 'DELETE'], to: 'Editor'}                                
-                            ],
+                            // restrict: [
+                            //     {grant : ['READ'], to: 'Viewer'},
+                            //     {grant : ['WRITE', 'DELETE'], to: 'Editor'}                                
+                            // ],
                             odata.draft.enabled: true ,
                             Common.DefaultValuesFunction : 'getdefaultvalue') as projection on transaction.purchaseorder{
     *,

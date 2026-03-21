@@ -10,9 +10,8 @@ build-parameters:
       commands:
         - npm ci
         - npx cds build --production
-
 modules:
-  # AppRouter + UI Module
+### Manually adding our UI Module Fiori UI + Approuter
   - name: myfirstapp-ui
     type: approuter.nodejs
     path: app
@@ -30,10 +29,10 @@ modules:
           strictSSL: true
           forwardAuthToken: true
           url: '~{srv-url}'
+### End of adding
 
-  # CAP Backend Service
   - name: myfirstapp-srv
-    type: nodejs
+    type: approuter.nodejs
     path: gen/srv
     parameters:
       instances: 1
@@ -41,14 +40,13 @@ modules:
     build-parameters:
       builder: npm-ci
     provides:
-      - name: srv-api
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
         properties:
           srv-url: ${default-url}
     requires:
       - name: myfirstapp-auth
       - name: myfirstapp-db
 
-  # HDI Deployer
   - name: myfirstapp-db-deployer
     type: hdb
     path: gen/db
@@ -58,7 +56,6 @@ modules:
       - name: myfirstapp-db
 
 resources:
-  # XSUAA
   - name: myfirstapp-auth
     type: org.cloudfoundry.managed-service
     parameters:
@@ -70,8 +67,8 @@ resources:
         tenant-mode: dedicated
         oauth2-configuration:
           credential-types:
-            - binding-secret
-            - x509
+            - "binding-secret"
+            - "x509"
         role-collections:
           - name: 'Viewer (myfirstapp ${org}-${space})'
             description: 'generated'
@@ -85,8 +82,6 @@ resources:
             description: 'generated'
             role-template-references:
               - '$XSAPPNAME.userattributes'
-
-  # HDI Container
   - name: myfirstapp-db
     type: com.sap.xs.hdi-container
     parameters:
