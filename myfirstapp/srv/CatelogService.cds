@@ -16,7 +16,7 @@ entity businessPartnerSet as projection on master.businesspartner;
 entity AddressSet as projection on master.address;
 @readonly
 entity StatusCodeSet as projection on master.statusCode;
-@Capabilities : { Deletable : false }
+// @Capabilities : { Deletable : false }
 entity PurchaseOrderSet @(
                             restrict: [
                                 {grant : ['READ'], to: 'Viewer'},
