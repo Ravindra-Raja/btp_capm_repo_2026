@@ -14,7 +14,7 @@ module.exports = class CDSService extends cds.ApplicationService { init() {
 
     let ids = productSet.map( p => p.ProductId);
 
-    // CDS Query language to go to items data and aggregate the count
+    // CDS Query language to go to items data and aggregate the count.
 
     const orderCount = await SELECT.from(ItemsSet)
                                    .columns('ProductId', { func : 'count', as: 'prodCount'} )
