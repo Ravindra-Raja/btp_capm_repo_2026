@@ -29,7 +29,7 @@ modules:
           strictSSL: true
           forwardAuthToken: true
           url: '~{srv-url}'
-### End of adding.
+### End of adding..
 
   - name: myfirstapp-srv
     type: nodejs
