@@ -11,7 +11,7 @@ build-parameters:
         - npm ci
         - npx cds build --production
 modules:
-### Manually adding our UI Module Fiori UI + Approuter
+### Manually adding our UI Module Fiori UI + Approuter.
   - name: myfirstapp-ui
     type: nodejs
     path: app
