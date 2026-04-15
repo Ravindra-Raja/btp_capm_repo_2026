@@ -19,8 +19,8 @@ entity StatusCodeSet as projection on master.statusCode;
 // @Capabilities : { Deletable : false }
 entity PurchaseOrderSet @(
                             restrict: [
-                                {grant : ['READ'], to: 'Viewer'},
-                                {grant : ['WRITE', 'DELETE'], to: 'Editor'}                                
+                                {grant : ['READ'], to: 'Display'},
+                                {grant : ['WRITE', 'DELETE'], to: 'Edit'}                                
                             ],
                             odata.draft.enabled: true ,
                             Common.DefaultValuesFunction : 'getdefaultvalue') as projection on transaction.purchaseorder{
