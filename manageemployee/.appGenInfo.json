@@ -1,0 +1,28 @@
+{
+  "generationParameters": {
+    "generationDate": "Fri Apr 17 2026 11:25:01 GMT+0000 (Coordinated Universal Time)",
+    "generatorPlatform": "SAP Business Application Studio",
+    "serviceType": "SAP System (ABAP On-Premise)",
+    "metadataFilename": "",
+    "serviceUrl": "https://61930176trial-dev-myfirstapp-srv.cfapps.us10-001.hana.ondemand.com/odata/v4/CatelogService",
+    "appName": "manageemployee",
+    "appTitle": "Manage Employee",
+    "appDescription": "A HR Employee App",
+    "appNamespace": "mycap.hr",
+    "ui5Theme": "sap_horizon",
+    "ui5Version": "1.147.0",
+    "enableEslint": true,
+    "enableTypeScript": false,
+    "showMockDataInfo": true,
+    "generatorVersion": "1.22.0",
+    "template": "List Report Page V4",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [
+      {
+        "type": "Main Entity",
+        "value": "EmployeeSet"
+      }
+    ],
+    "launchText": "To launch the generated application, run the following from the generated application root folder:\n\n```\n    npm start\n```"
+  }
+}

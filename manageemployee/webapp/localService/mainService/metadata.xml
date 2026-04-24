@@ -1,0 +1,988 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Capabilities.V1.xml">
+        <edmx:Include Alias="Capabilities" Namespace="Org.OData.Capabilities.V1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+        <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+        <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Validation.V1.xml">
+        <edmx:Include Alias="Validation" Namespace="Org.OData.Validation.V1"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="CatelogService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotation Term="Core.Links">
+                <Collection>
+                    <Record>
+                        <PropertyValue Property="rel" String="author"/>
+                        <PropertyValue Property="href" String="https://cap.cloud.sap"/>
+                    </Record>
+                </Collection>
+            </Annotation>
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="EmployeeSet" EntityType="CatelogService.EmployeeSet">
+                    <NavigationPropertyBinding Path="Currency" Target="Currencies"/>
+                </EntitySet>
+                <EntitySet Name="ProudctSet" EntityType="CatelogService.ProudctSet">
+                    <NavigationPropertyBinding Path="SUPPLIER_GUID" Target="businessPartnerSet"/>
+                    <NavigationPropertyBinding Path="texts" Target="ProudctSet_texts"/>
+                    <NavigationPropertyBinding Path="localized" Target="ProudctSet_texts"/>
+                </EntitySet>
+                <EntitySet Name="businessPartnerSet" EntityType="CatelogService.businessPartnerSet">
+                    <NavigationPropertyBinding Path="ADDRESS_GUID" Target="AddressSet"/>
+                </EntitySet>
+                <EntitySet Name="AddressSet" EntityType="CatelogService.AddressSet">
+                    <NavigationPropertyBinding Path="businesspartner" Target="businessPartnerSet"/>
+                </EntitySet>
+                <EntitySet Name="StatusCodeSet" EntityType="CatelogService.StatusCodeSet"/>
+                <EntitySet Name="PurchaseOrderSet" EntityType="CatelogService.PurchaseOrderSet">
+                    <NavigationPropertyBinding Path="CURRENCY" Target="Currencies"/>
+                    <NavigationPropertyBinding Path="PARTNER_GUID" Target="businessPartnerSet"/>
+                    <NavigationPropertyBinding Path="items" Target="PurchaseItemsSet"/>
+                    <NavigationPropertyBinding Path="SiblingEntity" Target="PurchaseOrderSet"/>
+                </EntitySet>
+                <EntitySet Name="PurchaseItemsSet" EntityType="CatelogService.PurchaseItemsSet">
+                    <NavigationPropertyBinding Path="CURRENCY" Target="Currencies"/>
+                    <NavigationPropertyBinding Path="PARENT_KEY" Target="PurchaseOrderSet"/>
+                    <NavigationPropertyBinding Path="PRODUCT_GUID" Target="ProudctSet"/>
+                    <NavigationPropertyBinding Path="SiblingEntity" Target="PurchaseItemsSet"/>
+                </EntitySet>
+                <EntitySet Name="Currencies" EntityType="CatelogService.Currencies">
+                    <NavigationPropertyBinding Path="texts" Target="Currencies_texts"/>
+                    <NavigationPropertyBinding Path="localized" Target="Currencies_texts"/>
+                </EntitySet>
+                <EntitySet Name="ProudctSet_texts" EntityType="CatelogService.ProudctSet_texts"/>
+                <EntitySet Name="Currencies_texts" EntityType="CatelogService.Currencies_texts"/>
+                <FunctionImport Name="getLargestOrder" Function="CatelogService.getLargestOrder" EntitySet="PurchaseOrderSet"/>
+                <FunctionImport Name="getdefaultvalue" Function="CatelogService.getdefaultvalue" EntitySet="PurchaseOrderSet"/>
+            </EntityContainer>
+            <EntityType Name="EmployeeSet">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="nameFirst" Type="Edm.String" MaxLength="256"/>
+                <Property Name="nameLast" Type="Edm.String" MaxLength="256"/>
+                <Property Name="nameMiddle" Type="Edm.String" MaxLength="256"/>
+                <Property Name="nameInitials" Type="Edm.String" MaxLength="40"/>
+                <Property Name="sex" Type="Edm.String" MaxLength="2"/>
+                <Property Name="language" Type="Edm.String" MaxLength="2"/>
+                <Property Name="phoneNumber" Type="Edm.String" MaxLength="30"/>
+                <Property Name="email" Type="Edm.String" MaxLength="250"/>
+                <Property Name="loginName" Type="Edm.String" MaxLength="12"/>
+                <NavigationProperty Name="Currency" Type="CatelogService.Currencies">
+                    <ReferentialConstraint Property="Currency_code" ReferencedProperty="code"/>
+                </NavigationProperty>
+                <Property Name="Currency_code" Type="Edm.String" MaxLength="3"/>
+                <Property Name="salaryAmount" Type="Edm.Decimal" Precision="10" Scale="2"/>
+                <Property Name="accountNumber" Type="Edm.String" MaxLength="16"/>
+                <Property Name="bankId" Type="Edm.String" MaxLength="20"/>
+                <Property Name="bankName" Type="Edm.String" MaxLength="64"/>
+            </EntityType>
+            <EntityType Name="ProudctSet">
+                <Key>
+                    <PropertyRef Name="NODE_KEY"/>
+                </Key>
+                <Property Name="NODE_KEY" Type="Edm.String" MaxLength="32" Nullable="false"/>
+                <Property Name="PRODUCT_ID" Type="Edm.String" MaxLength="28"/>
+                <Property Name="TYPE_CODE" Type="Edm.String" MaxLength="2"/>
+                <Property Name="CATEGORY" Type="Edm.String" MaxLength="32"/>
+                <Property Name="DESCRIPTION" Type="Edm.String" MaxLength="255"/>
+                <NavigationProperty Name="SUPPLIER_GUID" Type="CatelogService.businessPartnerSet">
+                    <ReferentialConstraint Property="SUPPLIER_GUID_NODE_KEY" ReferencedProperty="NODE_KEY"/>
+                </NavigationProperty>
+                <Property Name="SUPPLIER_GUID_NODE_KEY" Type="Edm.String" MaxLength="32"/>
+                <Property Name="TAX_TARIF_CODE" Type="Edm.Int32"/>
+                <Property Name="MEASURE_UNIT" Type="Edm.String" MaxLength="2"/>
+                <Property Name="WEIGHT_MEASURE" Type="Edm.Decimal" Precision="5" Scale="2"/>
+                <Property Name="WEIGHT_UNIT" Type="Edm.String" MaxLength="2"/>
+                <Property Name="CURRENCY_CODE" Type="Edm.String" MaxLength="4"/>
+                <Property Name="PRICE" Type="Edm.Decimal" Precision="15" Scale="2"/>
+                <Property Name="WIDTH" Type="Edm.Decimal" Precision="5" Scale="2"/>
+                <Property Name="DEPTH" Type="Edm.Decimal" Precision="5" Scale="2"/>
+                <Property Name="HEIGHT" Type="Edm.Decimal" Precision="5" Scale="2"/>
+                <Property Name="DIM_UNIT" Type="Edm.String" MaxLength="2"/>
+                <NavigationProperty Name="texts" Type="Collection(CatelogService.ProudctSet_texts)">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <NavigationProperty Name="localized" Type="CatelogService.ProudctSet_texts">
+                    <ReferentialConstraint Property="NODE_KEY" ReferencedProperty="NODE_KEY"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="businessPartnerSet">
+                <Key>
+                    <PropertyRef Name="NODE_KEY"/>
+                </Key>
+                <Property Name="NODE_KEY" Type="Edm.String" MaxLength="32" Nullable="false"/>
+                <Property Name="BP_ROLE" Type="Edm.String" MaxLength="2"/>
+                <Property Name="EMAIL_ADDRESS" Type="Edm.String" MaxLength="125"/>
+                <Property Name="PHONE_NUMBER" Type="Edm.String" MaxLength="32"/>
+                <Property Name="FAX_NUMBER" Type="Edm.String" MaxLength="32"/>
+                <Property Name="WEB_ADDRESS" Type="Edm.String" MaxLength="44"/>
+                <Property Name="BP_ID" Type="Edm.String" MaxLength="32"/>
+                <Property Name="COMPANY_NAME" Type="Edm.String" MaxLength="250"/>
+                <NavigationProperty Name="ADDRESS_GUID" Type="CatelogService.AddressSet" Partner="businesspartner">
+                    <ReferentialConstraint Property="ADDRESS_GUID_NODE_KEY" ReferencedProperty="NODE_KEY"/>
+                </NavigationProperty>
+                <Property Name="ADDRESS_GUID_NODE_KEY" Type="Edm.String" MaxLength="32"/>
+            </EntityType>
+            <EntityType Name="AddressSet">
+                <Key>
+                    <PropertyRef Name="NODE_KEY"/>
+                </Key>
+                <Property Name="NODE_KEY" Type="Edm.String" MaxLength="32" Nullable="false"/>
+                <Property Name="CITY" Type="Edm.String" MaxLength="44"/>
+                <Property Name="POSTAL_CODE" Type="Edm.String" MaxLength="8"/>
+                <Property Name="STREET" Type="Edm.String" MaxLength="44"/>
+                <Property Name="BUILDING" Type="Edm.String" MaxLength="128"/>
+                <Property Name="COUNTRY" Type="Edm.String" MaxLength="44"/>
+                <Property Name="ADDRESS_TYPE" Type="Edm.String" MaxLength="44"/>
+                <Property Name="VAL_START_DATE" Type="Edm.Date"/>
+                <Property Name="VAL_END_DATE" Type="Edm.Date"/>
+                <Property Name="LATITUDE" Type="Edm.Decimal" Scale="variable"/>
+                <Property Name="LONGITUDE" Type="Edm.Decimal" Scale="variable"/>
+                <NavigationProperty Name="businesspartner" Type="CatelogService.businessPartnerSet" Partner="ADDRESS_GUID">
+                    <ReferentialConstraint Property="NODE_KEY" ReferencedProperty="ADDRESS_GUID_NODE_KEY"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="StatusCodeSet">
+                <Key>
+                    <PropertyRef Name="code"/>
+                </Key>
+                <Property Name="code" Type="Edm.String" MaxLength="1" Nullable="false"/>
+                <Property Name="value" Type="Edm.String" MaxLength="10"/>
+            </EntityType>
+            <EntityType Name="PurchaseOrderSet">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <NavigationProperty Name="CURRENCY" Type="CatelogService.Currencies">
+                    <ReferentialConstraint Property="CURRENCY_code" ReferencedProperty="code"/>
+                </NavigationProperty>
+                <Property Name="CURRENCY_code" Type="Edm.String" MaxLength="3"/>
+                <Property Name="GROSS_AMOUNT" Type="Edm.Decimal" Precision="10" Scale="2"/>
+                <Property Name="NET_AMOUNT" Type="Edm.Decimal" Precision="10" Scale="2"/>
+                <Property Name="TAX_AMOUNT" Type="Edm.Decimal" Precision="10" Scale="2"/>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="PO_ID" Type="Edm.String" MaxLength="32"/>
+                <NavigationProperty Name="PARTNER_GUID" Type="CatelogService.businessPartnerSet">
+                    <ReferentialConstraint Property="PARTNER_GUID_NODE_KEY" ReferencedProperty="NODE_KEY"/>
+                </NavigationProperty>
+                <Property Name="PARTNER_GUID_NODE_KEY" Type="Edm.String" MaxLength="32"/>
+                <Property Name="LIFECYCLE_STATUS" Type="Edm.String" MaxLength="1"/>
+                <Property Name="OVERALL_STATUS" Type="Edm.String" MaxLength="1"/>
+                <Property Name="NOTE" Type="Edm.String" MaxLength="100"/>
+                <NavigationProperty Name="items" Type="Collection(CatelogService.PurchaseItemsSet)" Partner="PARENT_KEY">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <Property Name="overallStatus" Type="Edm.String" MaxLength="10"/>
+                <Property Name="colorIcon" Type="Edm.Int32"/>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <NavigationProperty Name="DraftAdministrativeData" Type="CatelogService.DraftAdministrativeData" ContainsTarget="true"/>
+                <NavigationProperty Name="SiblingEntity" Type="CatelogService.PurchaseOrderSet"/>
+                <Property Name="DraftMessages" Type="Collection(CatelogService.DRAFT_DraftAdministrativeData_DraftMessage)" Nullable="true"/>
+            </EntityType>
+            <EntityType Name="PurchaseItemsSet">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <NavigationProperty Name="CURRENCY" Type="CatelogService.Currencies">
+                    <ReferentialConstraint Property="CURRENCY_code" ReferencedProperty="code"/>
+                </NavigationProperty>
+                <Property Name="CURRENCY_code" Type="Edm.String" MaxLength="3"/>
+                <Property Name="GROSS_AMOUNT" Type="Edm.Decimal" Precision="10" Scale="2"/>
+                <Property Name="NET_AMOUNT" Type="Edm.Decimal" Precision="10" Scale="2"/>
+                <Property Name="TAX_AMOUNT" Type="Edm.Decimal" Precision="10" Scale="2"/>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <NavigationProperty Name="PARENT_KEY" Type="CatelogService.PurchaseOrderSet" Partner="items">
+                    <ReferentialConstraint Property="PARENT_KEY_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <Property Name="PARENT_KEY_ID" Type="Edm.Guid"/>
+                <Property Name="PO_ITEM_POS" Type="Edm.Int32"/>
+                <NavigationProperty Name="PRODUCT_GUID" Type="CatelogService.ProudctSet">
+                    <ReferentialConstraint Property="PRODUCT_GUID_NODE_KEY" ReferencedProperty="NODE_KEY"/>
+                </NavigationProperty>
+                <Property Name="PRODUCT_GUID_NODE_KEY" Type="Edm.String" MaxLength="32"/>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <NavigationProperty Name="DraftAdministrativeData" Type="CatelogService.DraftAdministrativeData" ContainsTarget="true"/>
+                <NavigationProperty Name="SiblingEntity" Type="CatelogService.PurchaseItemsSet"/>
+                <Property Name="DraftMessages" Type="Collection(CatelogService.DRAFT_DraftAdministrativeData_DraftMessage)" Nullable="true"/>
+            </EntityType>
+            <EntityType Name="Currencies">
+                <Key>
+                    <PropertyRef Name="code"/>
+                </Key>
+                <Property Name="name" Type="Edm.String" MaxLength="255"/>
+                <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+                <Property Name="code" Type="Edm.String" MaxLength="3" Nullable="false"/>
+                <Property Name="symbol" Type="Edm.String" MaxLength="5"/>
+                <Property Name="minorUnit" Type="Edm.Int16"/>
+                <NavigationProperty Name="texts" Type="Collection(CatelogService.Currencies_texts)">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <NavigationProperty Name="localized" Type="CatelogService.Currencies_texts">
+                    <ReferentialConstraint Property="code" ReferencedProperty="code"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="DraftAdministrativeData">
+                <Key>
+                    <PropertyRef Name="DraftUUID"/>
+                </Key>
+                <Property Name="DraftUUID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="CreationDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="CreatedByUser" Type="Edm.String" MaxLength="256"/>
+                <Property Name="DraftIsCreatedByMe" Type="Edm.Boolean"/>
+                <Property Name="LastChangeDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="LastChangedByUser" Type="Edm.String" MaxLength="256"/>
+                <Property Name="InProcessByUser" Type="Edm.String" MaxLength="256"/>
+                <Property Name="DraftIsProcessedByMe" Type="Edm.Boolean"/>
+            </EntityType>
+            <EntityType Name="ProudctSet_texts">
+                <Key>
+                    <PropertyRef Name="locale"/>
+                    <PropertyRef Name="NODE_KEY"/>
+                </Key>
+                <Property Name="locale" Type="Edm.String" MaxLength="14" Nullable="false"/>
+                <Property Name="NODE_KEY" Type="Edm.String" MaxLength="32" Nullable="false"/>
+                <Property Name="DESCRIPTION" Type="Edm.String" MaxLength="255"/>
+            </EntityType>
+            <EntityType Name="Currencies_texts">
+                <Key>
+                    <PropertyRef Name="locale"/>
+                    <PropertyRef Name="code"/>
+                </Key>
+                <Property Name="locale" Type="Edm.String" MaxLength="14" Nullable="false"/>
+                <Property Name="name" Type="Edm.String" MaxLength="255"/>
+                <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+                <Property Name="code" Type="Edm.String" MaxLength="3" Nullable="false"/>
+            </EntityType>
+            <ComplexType Name="DRAFT_DraftAdministrativeData_DraftMessage">
+                <Property Name="code" Type="Edm.String"/>
+                <Property Name="message" Type="Edm.String"/>
+                <Property Name="target" Type="Edm.String"/>
+                <Property Name="additionalTargets" Type="Collection(Edm.String)" Nullable="true"/>
+                <Property Name="transition" Type="Edm.Boolean"/>
+                <Property Name="numericSeverity" Type="Edm.Byte"/>
+                <Property Name="longtextUrl" Type="Edm.String"/>
+            </ComplexType>
+            <Action Name="boost" IsBound="true" EntitySetPath="_refresh">
+                <Parameter Name="_refresh" Type="CatelogService.PurchaseOrderSet"/>
+                <ReturnType Type="CatelogService.PurchaseOrderSet"/>
+            </Action>
+            <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="CatelogService.PurchaseOrderSet"/>
+                <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+                <ReturnType Type="CatelogService.PurchaseOrderSet"/>
+            </Action>
+            <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="CatelogService.PurchaseItemsSet"/>
+                <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+                <ReturnType Type="CatelogService.PurchaseItemsSet"/>
+            </Action>
+            <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="CatelogService.PurchaseOrderSet"/>
+                <ReturnType Type="CatelogService.PurchaseOrderSet"/>
+            </Action>
+            <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="CatelogService.PurchaseOrderSet"/>
+                <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
+                <ReturnType Type="CatelogService.PurchaseOrderSet"/>
+            </Action>
+            <Function Name="getLargestOrder" IsBound="false" IsComposable="false">
+                <ReturnType Type="Collection(CatelogService.PurchaseOrderSet)"/>
+            </Function>
+            <Function Name="getdefaultvalue" IsBound="false" IsComposable="false">
+                <ReturnType Type="CatelogService.PurchaseOrderSet"/>
+            </Function>
+            <Annotations Target="CatelogService.EntityContainer">
+                <Annotation Term="Common.AddressViaNavigationPath" Bool="true"/>
+            </Annotations>
+            <Annotations Target="CatelogService.EmployeeSet/ID">
+                <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+            </Annotations>
+            <Annotations Target="CatelogService.EmployeeSet/sex">
+                <Annotation Term="Validation.AllowedValues">
+                    <Collection>
+                        <Record Type="Validation.AllowedValue">
+                            <Annotation Term="Core.SymbolicName" String="male"/>
+                            <PropertyValue Property="Value" String="M"/>
+                        </Record>
+                        <Record Type="Validation.AllowedValue">
+                            <Annotation Term="Core.SymbolicName" String="female"/>
+                            <PropertyValue Property="Value" String="F"/>
+                        </Record>
+                        <Record Type="Validation.AllowedValue">
+                            <Annotation Term="Core.SymbolicName" String="undisclosed"/>
+                            <PropertyValue Property="Value" String="U"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="CatelogService.EmployeeSet/phoneNumber">
+                <Annotation Term="Validation.Pattern" String="^[6-9]\d{9}$"/>
+            </Annotations>
+            <Annotations Target="CatelogService.EmployeeSet/email">
+                <Annotation Term="Validation.Pattern" String="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"/>
+            </Annotations>
+            <Annotations Target="CatelogService.EmployeeSet/Currency">
+                <Annotation Term="Common.Label" String="Currency"/>
+                <Annotation Term="Core.Description" String="Currency code as specified by ISO 4217"/>
+            </Annotations>
+            <Annotations Target="CatelogService.EmployeeSet/Currency_code">
+                <Annotation Term="Common.Label" String="Currency"/>
+                <Annotation Term="Common.ValueList">
+                    <Record Type="Common.ValueListType">
+                        <PropertyValue Property="Label" String="Currency"/>
+                        <PropertyValue Property="CollectionPath" String="Currencies"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="Currency_code"/>
+                                    <PropertyValue Property="ValueListProperty" String="code"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="name"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Core.Description" String="Currency code as specified by ISO 4217"/>
+            </Annotations>
+            <Annotations Target="CatelogService.ProudctSet">
+                <Annotation Term="UI.Identification">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="DESCRIPTION"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="CatelogService.ProudctSet/NODE_KEY">
+                <Annotation Term="Common.Label" String="Product Key"/>
+            </Annotations>
+            <Annotations Target="CatelogService.ProudctSet/PRODUCT_ID">
+                <Annotation Term="Common.Label" String="Product ID"/>
+            </Annotations>
+            <Annotations Target="CatelogService.ProudctSet/DESCRIPTION">
+                <Annotation Term="Common.Label" String="Product Name"/>
+            </Annotations>
+            <Annotations Target="CatelogService.ProudctSet/SUPPLIER_GUID_NODE_KEY">
+                <Annotation Term="Common.ValueList">
+                    <Record Type="Common.ValueListType">
+                        <PropertyValue Property="Label" String="businessPartnerSet"/>
+                        <PropertyValue Property="CollectionPath" String="businessPartnerSet"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="SUPPLIER_GUID_NODE_KEY"/>
+                                    <PropertyValue Property="ValueListProperty" String="NODE_KEY"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="COMPANY_NAME"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="CatelogService.ProudctSet/CURRENCY_CODE">
+                <Annotation Term="Common.Label" String="CURRENCY"/>
+            </Annotations>
+            <Annotations Target="CatelogService.businessPartnerSet">
+                <Annotation Term="UI.Identification">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="COMPANY_NAME"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="CatelogService.businessPartnerSet/NODE_KEY">
+                <Annotation Term="Common.Label" String="Partner Key"/>
+            </Annotations>
+            <Annotations Target="CatelogService.businessPartnerSet/BP_ID">
+                <Annotation Term="Common.Label" String="PARTNER_ID"/>
+            </Annotations>
+            <Annotations Target="CatelogService.businessPartnerSet/COMPANY_NAME">
+                <Annotation Term="Common.Label" String="Company Name"/>
+            </Annotations>
+            <Annotations Target="CatelogService.AddressSet/COUNTRY">
+                <Annotation Term="Common.Label" String="Country"/>
+            </Annotations>
+            <Annotations Target="CatelogService.EntityContainer/StatusCodeSet">
+                <Annotation Term="Capabilities.DeleteRestrictions">
+                    <Record Type="Capabilities.DeleteRestrictionsType">
+                        <PropertyValue Property="Deletable" Bool="false"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.InsertRestrictions">
+                    <Record Type="Capabilities.InsertRestrictionsType">
+                        <PropertyValue Property="Insertable" Bool="false"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.UpdateRestrictions">
+                    <Record Type="Capabilities.UpdateRestrictionsType">
+                        <PropertyValue Property="Updatable" Bool="false"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="CatelogService.StatusCodeSet/code">
+                <Annotation Term="Common.Text" Path="value"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseOrderSet">
+                <Annotation Term="Common.SideEffects" Qualifier="alwaysFetchMessages">
+                    <Record Type="Common.SideEffectsType">
+                        <PropertyValue Property="SourceEntities">
+                            <Collection>
+                                <NavigationPropertyPath>
+                                </NavigationPropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="TargetProperties">
+                            <Collection>
+                                <String>DraftMessages</String>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Common.Messages" Path="DraftMessages"/>
+                <Annotation Term="UI.SelectionFields">
+                    <Collection>
+                        <PropertyPath>PO_ID</PropertyPath>
+                        <PropertyPath>PARTNER_GUID/COMPANY_NAME</PropertyPath>
+                        <PropertyPath>PARTNER_GUID/ADDRESS_GUID/COUNTRY</PropertyPath>
+                        <PropertyPath>GROSS_AMOUNT</PropertyPath>
+                        <PropertyPath>OVERALL_STATUS</PropertyPath>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="PO_ID"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="PARTNER_GUID/COMPANY_NAME"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="PARTNER_GUID/ADDRESS_GUID/COUNTRY"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="GROSS_AMOUNT"/>
+                        </Record>
+                        <Record Type="UI.DataFieldForAction">
+                            <PropertyValue Property="Action" String="CatelogService.boost"/>
+                            <PropertyValue Property="Label" String="boost"/>
+                            <PropertyValue Property="Inline" Bool="true"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="OVERALL_STATUS"/>
+                            <PropertyValue Property="Criticality" Path="colorIcon"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.HeaderInfo">
+                    <Record Type="UI.HeaderInfoType">
+                        <PropertyValue Property="TypeName" String="Purchase Order"/>
+                        <PropertyValue Property="TypeNamePlural" String="Purchase orders"/>
+                        <PropertyValue Property="Title">
+                            <Record Type="UI.DataField">
+                                <PropertyValue Property="Value" Path="PO_ID"/>
+                            </Record>
+                        </PropertyValue>
+                        <PropertyValue Property="Description">
+                            <Record Type="UI.DataField">
+                                <PropertyValue Property="Value" Path="PARTNER_GUID/COMPANY_NAME"/>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.Facets">
+                    <Collection>
+                        <Record Type="UI.CollectionFacet">
+                            <PropertyValue Property="Label" String="General Information"/>
+                            <PropertyValue Property="Facets">
+                                <Collection>
+                                    <Record Type="UI.ReferenceFacet">
+                                        <PropertyValue Property="Label" String="Basic Info"/>
+                                        <PropertyValue Property="Target" AnnotationPath="@UI.Identification"/>
+                                    </Record>
+                                    <Record Type="UI.ReferenceFacet">
+                                        <PropertyValue Property="Label" String="Pricing Details"/>
+                                        <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Pricing"/>
+                                    </Record>
+                                    <Record Type="UI.ReferenceFacet">
+                                        <PropertyValue Property="Label" String="Status Info"/>
+                                        <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#statusInfo"/>
+                                    </Record>
+                                </Collection>
+                            </PropertyValue>
+                        </Record>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="Items"/>
+                            <PropertyValue Property="Target" AnnotationPath="items/@UI.LineItem"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.Identification">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="PO_ID"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="NOTE"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="PARTNER_GUID_NODE_KEY"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="Pricing">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="GROSS_AMOUNT"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="NET_AMOUNT"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="TAX_AMOUNT"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="statusInfo">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="CURRENCY_code"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="OVERALL_STATUS"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="LIFECYCLE_STATUS"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="CatelogService.EntityContainer/PurchaseOrderSet">
+                <Annotation Term="Common.DefaultValuesFunction" String="getdefaultvalue"/>
+                <Annotation Term="Common.DraftRoot">
+                    <Record Type="Common.DraftRootType">
+                        <PropertyValue Property="ActivationAction" String="CatelogService.draftActivate"/>
+                        <PropertyValue Property="EditAction" String="CatelogService.draftEdit"/>
+                        <PropertyValue Property="PreparationAction" String="CatelogService.draftPrepare"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Common.SideEffects" Qualifier="alwaysFetchMessages">
+                    <Record Type="Common.SideEffectsType">
+                        <PropertyValue Property="SourceEntities">
+                            <Collection>
+                                <NavigationPropertyPath>
+                                </NavigationPropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="TargetProperties">
+                            <Collection>
+                                <String>DraftMessages</String>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseOrderSet/CURRENCY">
+                <Annotation Term="Common.Label" String="Currency"/>
+                <Annotation Term="Core.Description" String="Currency code as specified by ISO 4217"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseOrderSet/CURRENCY_code">
+                <Annotation Term="Common.Label" String="Currency"/>
+                <Annotation Term="Common.ValueList">
+                    <Record Type="Common.ValueListType">
+                        <PropertyValue Property="Label" String="Currency"/>
+                        <PropertyValue Property="CollectionPath" String="Currencies"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="CURRENCY_code"/>
+                                    <PropertyValue Property="ValueListProperty" String="code"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="name"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Core.Description" String="Currency code as specified by ISO 4217"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseOrderSet/GROSS_AMOUNT">
+                <Annotation Term="Common.Label" String="Gross Amount"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseOrderSet/NET_AMOUNT">
+                <Annotation Term="Common.Label" String="Net Amount"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseOrderSet/TAX_AMOUNT">
+                <Annotation Term="Common.Label" String="Tax Amount"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseOrderSet/ID">
+                <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseOrderSet/PO_ID">
+                <Annotation Term="Common.Text" Path="NOTE"/>
+                <Annotation Term="Common.Label" String="Purchase Order ID"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseOrderSet/PARTNER_GUID">
+                <Annotation Term="Common.Label" String="Partner Key"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseOrderSet/PARTNER_GUID_NODE_KEY">
+                <Annotation Term="Common.Text" Path="PARTNER_GUID/COMPANY_NAME"/>
+                <Annotation Term="Common.Label" String="Partner Key"/>
+                <Annotation Term="Common.ValueList">
+                    <Record Type="Common.ValueListType">
+                        <PropertyValue Property="Label" String="Partner Key"/>
+                        <PropertyValue Property="CollectionPath" String="businessPartnerSet"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="PARTNER_GUID_NODE_KEY"/>
+                                    <PropertyValue Property="ValueListProperty" String="NODE_KEY"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="COMPANY_NAME"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseOrderSet/LIFECYCLE_STATUS">
+                <Annotation Term="Common.Label" String="Life time status"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseOrderSet/OVERALL_STATUS">
+                <Annotation Term="Common.Text" Path="overallStatus"/>
+                <Annotation Term="Common.ValueList">
+                    <Record Type="Common.ValueListType">
+                        <PropertyValue Property="CollectionPath" String="StatusCodeSet"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="OVERALL_STATUS"/>
+                                    <PropertyValue Property="ValueListProperty" String="code"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Label" String="Status"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Common.ValueListWithFixedValues" Bool="true"/>
+                <Annotation Term="Common.Label" String="Status"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseOrderSet/NOTE">
+                <Annotation Term="Common.Label" String="Remarks"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseOrderSet/overallStatus">
+                <Annotation Term="Core.Computed" Bool="true"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseOrderSet/colorIcon">
+                <Annotation Term="Core.Computed" Bool="true"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseOrderSet/IsActiveEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseOrderSet/HasActiveEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseOrderSet/HasDraftEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseOrderSet/DraftAdministrativeData">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseOrderSet/DraftMessages">
+                <Annotation Term="Core.Computed" Bool="true"/>
+            </Annotations>
+            <Annotations Target="CatelogService.boost(CatelogService.PurchaseOrderSet)">
+                <Annotation Term="Common.SideEffects">
+                    <Record Type="Common.SideEffectsType">
+                        <PropertyValue Property="TargetProperties">
+                            <Collection>
+                                <String>_refresh/GROSS_AMOUNT</String>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseItemsSet">
+                <Annotation Term="UI.HeaderInfo">
+                    <Record Type="UI.HeaderInfoType">
+                        <PropertyValue Property="TypeName" String="PO Items"/>
+                        <PropertyValue Property="TypeNamePlural" String="Purchase order items"/>
+                        <PropertyValue Property="Title">
+                            <Record Type="UI.DataField">
+                                <PropertyValue Property="Value" Path="PO_ITEM_POS"/>
+                            </Record>
+                        </PropertyValue>
+                        <PropertyValue Property="Description">
+                            <Record Type="UI.DataField">
+                                <PropertyValue Property="Value" Path="PRODUCT_GUID/DESCRIPTION"/>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="PO_ITEM_POS"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="PRODUCT_GUID_NODE_KEY"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="GROSS_AMOUNT"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="NET_AMOUNT"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="TAX_AMOUNT"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.Facets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="Item details"/>
+                            <PropertyValue Property="Target" AnnotationPath="@UI.Identification"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.Identification">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="PO_ITEM_POS"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="PRODUCT_GUID_NODE_KEY"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="GROSS_AMOUNT"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="NET_AMOUNT"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="TAX_AMOUNT"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="Common.SideEffects" Qualifier="alwaysFetchMessages">
+                    <Record Type="Common.SideEffectsType">
+                        <PropertyValue Property="SourceEntities">
+                            <Collection>
+                                <NavigationPropertyPath>
+                                </NavigationPropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="TargetProperties">
+                            <Collection>
+                                <String>DraftMessages</String>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Common.Messages" Path="DraftMessages"/>
+            </Annotations>
+            <Annotations Target="CatelogService.EntityContainer/PurchaseItemsSet">
+                <Annotation Term="Common.DraftNode">
+                    <Record Type="Common.DraftNodeType">
+                        <PropertyValue Property="PreparationAction" String="CatelogService.draftPrepare"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Common.SideEffects" Qualifier="alwaysFetchMessages">
+                    <Record Type="Common.SideEffectsType">
+                        <PropertyValue Property="SourceEntities">
+                            <Collection>
+                                <NavigationPropertyPath>
+                                </NavigationPropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="TargetProperties">
+                            <Collection>
+                                <String>DraftMessages</String>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseItemsSet/CURRENCY">
+                <Annotation Term="Common.Label" String="Currency"/>
+                <Annotation Term="Core.Description" String="Currency code as specified by ISO 4217"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseItemsSet/CURRENCY_code">
+                <Annotation Term="Common.Label" String="Currency"/>
+                <Annotation Term="Common.ValueList">
+                    <Record Type="Common.ValueListType">
+                        <PropertyValue Property="Label" String="Currency"/>
+                        <PropertyValue Property="CollectionPath" String="Currencies"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="CURRENCY_code"/>
+                                    <PropertyValue Property="ValueListProperty" String="code"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="name"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Core.Description" String="Currency code as specified by ISO 4217"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseItemsSet/GROSS_AMOUNT">
+                <Annotation Term="Common.Label" String="Gross Amount"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseItemsSet/NET_AMOUNT">
+                <Annotation Term="Common.Label" String="Net Amount"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseItemsSet/TAX_AMOUNT">
+                <Annotation Term="Common.Label" String="Tax Amount"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseItemsSet/ID">
+                <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseItemsSet/PRODUCT_GUID_NODE_KEY">
+                <Annotation Term="Common.Text" Path="PRODUCT_GUID/DESCRIPTION"/>
+                <Annotation Term="Common.ValueList">
+                    <Record Type="Common.ValueListType">
+                        <PropertyValue Property="Label" String="ProudctSet"/>
+                        <PropertyValue Property="CollectionPath" String="ProudctSet"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="PRODUCT_GUID_NODE_KEY"/>
+                                    <PropertyValue Property="ValueListProperty" String="NODE_KEY"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="DESCRIPTION"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseItemsSet/IsActiveEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseItemsSet/HasActiveEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseItemsSet/HasDraftEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseItemsSet/DraftAdministrativeData">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="CatelogService.PurchaseItemsSet/DraftMessages">
+                <Annotation Term="Core.Computed" Bool="true"/>
+            </Annotations>
+            <Annotations Target="CatelogService.Currencies">
+                <Annotation Term="UI.Identification">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="name"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="CatelogService.Currencies/name">
+                <Annotation Term="Common.Label" String="Name"/>
+            </Annotations>
+            <Annotations Target="CatelogService.Currencies/descr">
+                <Annotation Term="Common.Label" String="Description"/>
+            </Annotations>
+            <Annotations Target="CatelogService.Currencies/code">
+                <Annotation Term="Common.Text" Path="name"/>
+                <Annotation Term="Common.Label" String="Currency Code"/>
+            </Annotations>
+            <Annotations Target="CatelogService.Currencies/symbol">
+                <Annotation Term="Common.Label" String="Currency Symbol"/>
+            </Annotations>
+            <Annotations Target="CatelogService.Currencies/minorUnit">
+                <Annotation Term="Common.Label" String="Currency Minor Unit Fractions"/>
+            </Annotations>
+            <Annotations Target="CatelogService.DraftAdministrativeData">
+                <Annotation Term="Common.Label" String="Draft Administrative Data"/>
+            </Annotations>
+            <Annotations Target="CatelogService.DraftAdministrativeData/DraftUUID">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+                <Annotation Term="Common.Label" String="Draft (Technical ID)"/>
+                <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+            </Annotations>
+            <Annotations Target="CatelogService.DraftAdministrativeData/CreationDateTime">
+                <Annotation Term="Common.Label" String="Draft Created On"/>
+            </Annotations>
+            <Annotations Target="CatelogService.DraftAdministrativeData/CreatedByUser">
+                <Annotation Term="Common.Label" String="Draft Created By"/>
+            </Annotations>
+            <Annotations Target="CatelogService.DraftAdministrativeData/DraftIsCreatedByMe">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+                <Annotation Term="Common.Label" String="Draft Created By Me"/>
+            </Annotations>
+            <Annotations Target="CatelogService.DraftAdministrativeData/LastChangeDateTime">
+                <Annotation Term="Common.Label" String="Draft Last Changed On"/>
+            </Annotations>
+            <Annotations Target="CatelogService.DraftAdministrativeData/LastChangedByUser">
+                <Annotation Term="Common.Label" String="Draft Last Changed By"/>
+            </Annotations>
+            <Annotations Target="CatelogService.DraftAdministrativeData/InProcessByUser">
+                <Annotation Term="Common.Label" String="Draft In Process By"/>
+            </Annotations>
+            <Annotations Target="CatelogService.DraftAdministrativeData/DraftIsProcessedByMe">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+                <Annotation Term="Common.Label" String="Draft In Process By Me"/>
+            </Annotations>
+            <Annotations Target="CatelogService.ProudctSet_texts/locale">
+                <Annotation Term="Common.Label" String="Language Code"/>
+            </Annotations>
+            <Annotations Target="CatelogService.ProudctSet_texts/NODE_KEY">
+                <Annotation Term="Common.Label" String="Product Key"/>
+            </Annotations>
+            <Annotations Target="CatelogService.ProudctSet_texts/DESCRIPTION">
+                <Annotation Term="Common.Label" String="Product Name"/>
+            </Annotations>
+            <Annotations Target="CatelogService.Currencies_texts/locale">
+                <Annotation Term="Common.Label" String="Language Code"/>
+            </Annotations>
+            <Annotations Target="CatelogService.Currencies_texts/name">
+                <Annotation Term="Common.Label" String="Name"/>
+            </Annotations>
+            <Annotations Target="CatelogService.Currencies_texts/descr">
+                <Annotation Term="Common.Label" String="Description"/>
+            </Annotations>
+            <Annotations Target="CatelogService.Currencies_texts/code">
+                <Annotation Term="Common.Text" Path="name"/>
+                <Annotation Term="Common.Label" String="Currency Code"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

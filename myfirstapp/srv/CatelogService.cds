@@ -7,8 +7,8 @@ service CatelogService @(path: 'CatelogService', requires: 'authenticated-user')
 
 entity EmployeeSet @(restrict: [
                                 // Row level security
-                                {grant : ['READ'], to: 'Viewer', where : 'bankName = $user.bankName'},
-                                {grant : ['WRITE', 'DELETE'], to: 'Editor'}                                
+                                {grant : ['READ'], to: 'Display', where : 'bankName = $user.bankName'},
+                                {grant : ['WRITE', 'DELETE'], to: 'Edit'}                                
                             ]) 
                             as projection on master.employee;
 entity ProudctSet as projection on master.product;
