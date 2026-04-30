@@ -1,7 +1,7 @@
 namespace myfirst.db;
 using { myGlobal.common as common } from './commons';
 using { Currency, cuid } from '@sap/cds/common';
-
+using { Attachments } from '@cap-js/attachments';
 
 context master {
 
@@ -90,6 +90,7 @@ context transaction {
         OVERALL_STATUS:String(1) @(title: '{i18n>OVERALL_STATUS}');
         NOTE: String(100) @(title: '{i18n>NOTE}');
         items: Composition of many poitems on items.PARENT_KEY = $self;
+        attachments: Composition of many Attachments;
     };
 
     entity poitems : common.amount, cuid {
