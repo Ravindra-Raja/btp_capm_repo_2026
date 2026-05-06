@@ -1,36 +1,39 @@
 {
-  "welcomeFile": "managepo/webapp/index.html",
-  "authenticationMethod": "route",
-  "sessionTimeout": 10,
-
-    "responseHeaders": [
-    {
-      "name": "Content-Security-Policy",
-      "value": "default-src 'none'; img-src 'self' https: data:; script-src 'self' https://sapui5.hana.ondemand.com; style-src 'self' 'unsafe-inline' https://sapui5.hana.ondemand.com; connect-src 'self' https:; font-src 'self' https: data:;"
-    }
-  ],
-  
-  "routes": [				
-    {
-        "source": "^/managepo/webapp/(.*)",
-        "localDir": "managepo/webapp/",
-        "target": "$1",
-        "authenticationType": "xsuaa",
-        "csrfProtection": true
-    },
-    {
-        "source": "^/user-api/currentUser$",
-        "target": "/currentUser",
-        "service": "sap-approuter-userapi"
-    }, 
-    {
-        "source": "^/(.*)$",
-        "authenticationType": "xsuaa",
-        "destination": "srv-api"        
-    }    
-  ],
-  "logout": {
-     "logoutEndpoint": "/logout",
-     "logoutPage": "https://www.anubhavtrainings.com"
+ "welcomeFile": "managepo/webapp/index.html",
+ "authenticationMethod": "route",
+ "sessionTimeout": 10,
+ "responseHeaders": [
+  {
+   "name": "Content-Security-Policy",
+   "value": "default-src 'none'; img-src 'self' https: data:; script-src 'self' https://sapui5.hana.ondemand.com; style-src 'self' 'unsafe-inline' https://sapui5.hana.ondemand.com; connect-src 'self' https:; font-src 'self' https: data:;"
   }
+ ],
+ "routes": [
+  {
+   "source": "^/-/cds/.*",
+   "destination": "mtx-api",
+   "authenticationType": "none"
+  },
+  {
+   "source": "^/managepo/webapp/(.*)",
+   "localDir": "managepo/webapp/",
+   "target": "$1",
+   "authenticationType": "xsuaa",
+   "csrfProtection": true
+  },
+  {
+   "source": "^/user-api/currentUser$",
+   "target": "/currentUser",
+   "service": "sap-approuter-userapi"
+  },
+  {
+   "source": "^/(.*)$",
+   "authenticationType": "xsuaa",
+   "destination": "srv-api"
+  }
+ ],
+ "logout": {
+  "logoutEndpoint": "/logout",
+  "logoutPage": "https://www.anubhavtrainings.com"
+ }
 }
