@@ -44,6 +44,7 @@
           "kind": "mocked",
           "users": {
             "raja": {
+              "tenant" : "t1",
               "password": "Welcome1",
               "roles": [
                 "Display",

@@ -88,11 +88,12 @@ Content-Type: application/json
 
 ### Update data
 
-PATCH http://localhost:4004/odata/v4/CatelogService/EmployeeSet/82de4528-5891-4690-b08b-64874e08a163
+PATCH http://localhost:4004/odata/v4/CatelogService/EmployeeSet/02BD2137-0890-1EEA-A6C2-BB55C198A7FB
+Authorization: Basic raja:Welcome1
 Content-Type: application/json
 
 {
-  "salaryAmount": 65000
+  "salaryAmount": 45000
 }
 
 
