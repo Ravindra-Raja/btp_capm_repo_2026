@@ -1,5 +1,5 @@
 _schema-version: 3.3.0
-ID: myfirstapp
+ID: myfirstappana
 version: 1.0.0
 description: "A simple CAP project."
 parameters:
@@ -12,7 +12,7 @@ build-parameters:
         - npx cds build --production
 modules:
 ### Manually adding our UI Module Fiori UI + Approuter.
-  - name: myfirstapp-ui
+  - name: myfirstappana-ui
     type: nodejs
     path: app
     parameters:
@@ -21,7 +21,7 @@ modules:
     build-parameters:
       builder: npm-ci
     requires:
-      - name: myfirstapp-auth
+      - name: myfirstappana-auth
       - name: srv-api
         group: destinations
         properties:
@@ -31,7 +31,7 @@ modules:
           url: '~{srv-url}'
 ### End of adding.
 
-  - name: myfirstapp-srv
+  - name: myfirstappana-srv
     type: nodejs
     path: gen/srv
     parameters:
@@ -44,45 +44,45 @@ modules:
         properties:
           srv-url: ${default-url}
     requires:
-      - name: myfirstapp-auth
-      - name: myfirstapp-db
+      - name: myfirstappana-auth
+      - name: myfirstappana-db
 
-  - name: myfirstapp-db-deployer
+  - name: myfirstappana-db-deployer
     type: hdb
     path: gen/db
     parameters:
       buildpack: nodejs_buildpack
     requires:
-      - name: myfirstapp-db
+      - name: myfirstappana-db
 
 resources:
-  - name: myfirstapp-auth
+  - name: myfirstappana-auth
     type: org.cloudfoundry.managed-service
     parameters:
       service: xsuaa
       service-plan: application
       path: ./xs-security.json
       config:
-        xsappname: 'myfirstapp-${org}-${space}'
+        xsappname: 'myfirstappana-${org}-${space}'
         tenant-mode: dedicated
         oauth2-configuration:
           credential-types:
             - "binding-secret"
             - "x509"
         role-collections:
-          - name: 'Viewer (myfirstapp ${org}-${space})'
+          - name: 'Viewer (myfirstappana ${org}-${space})'
             description: 'generated'
             role-template-references:
               - '$XSAPPNAME.Viewer'
-          - name: 'Editor (myfirstapp ${org}-${space})'
+          - name: 'Editor (myfirstappana ${org}-${space})'
             description: 'generated'
             role-template-references:
               - '$XSAPPNAME.Editor'
-          - name: 'userattributes (myfirstapp ${org}-${space})'
+          - name: 'userattributes (myfirstappana ${org}-${space})'
             description: 'generated'
             role-template-references:
               - '$XSAPPNAME.userattributes'
-  - name: myfirstapp-db
+  - name: myfirstappana-db
     type: com.sap.xs.hdi-container
     parameters:
       service: hana
