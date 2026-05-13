@@ -16,14 +16,16 @@
   },
   "scripts": {
     "start": "cds-serve",
-    "watch-managepo": "cds watch --open purchase.ui.managepo/index.html?sap-ui-xx-viewCache=false --livereload false"
+    "watch-managepo": "cds watch --open purchase.ui.managepo/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-poanalytics": "cds watch --open po.ana.poanalytics/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
   "private": true,
   "workspaces": [
     "app/*"
   ],
   "sapux": [
-    "app/managepo"
+    "app/managepo",
+    "app/poanalytics"
   ],
   "cds": {
     "requires": {
